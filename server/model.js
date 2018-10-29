@@ -17,8 +17,15 @@ const models = {
         //boss的字段
         'company': {type: String},
         'money': {type: String}
-    },
-    chat: {}
+    }, //第一步建立聊天的数据模型 --> chat.redux.js
+    chat: {
+        'chatId': {type: String, require: true},
+        'from': {type: String, require: true},
+        'to': {type: String, require: true},
+        'read': {type: Boolean, default: false},
+        'content': {type: String, require: true, default: ''},
+        'create_time': {type: Number, default: new Date().getTime()}
+    }
 };
 //动态生成模型
 for(let m in models) {

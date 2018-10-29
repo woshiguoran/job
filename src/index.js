@@ -17,6 +17,7 @@ import Register from "./container/register/register";
 import BossInfo from "./container/bossinfo/bossinfo";
 import GeniusInfo from "./container/geniusinfo/geniusinfo";
 import Dashboard from "./conponment/dashboard/dashboard";
+import Chat from "./conponment/chat/chat";
 // const loggerMiddleware = createLogger({collapsed: true});
 
 const store = createStore(reduxReducers, composeWithDevTools(
@@ -46,10 +47,11 @@ ReactDOM.render(
                     {/*<DevTools />*/}
                     {/*path匹配的第一个*/}
                     {/*<Route path="/" exact component={App}></Route>*/}
-                    <Route path="/bossinfo" component={BossInfo}></Route>
-                    <Route path="/geniusInfo" component={GeniusInfo}></Route>
-                    <Route path="/login" component={Login}></Route>
-                    <Route path="/register" component={Register}></Route>
+                    <Route path="/bossinfo" component={BossInfo} />
+                    <Route path="/geniusInfo" component={GeniusInfo} />
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Register} />
+                    <Route path="/chat" component={ Chat } />
                     <Route component={Dashboard}></Route>
                 </Switch>
 
