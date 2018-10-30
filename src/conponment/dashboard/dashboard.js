@@ -8,6 +8,7 @@ import Boss from "../boss/boss";
 import Genius from "../genius/genius";
 import Msg from "../msg/msg";
 import User from "../user/user";
+import {getMsgList, resvMsg, sendMsg} from "../../reducer/chat.redux";
 
 class Error extends React.Component{
     render(){
@@ -20,10 +21,17 @@ class Error extends React.Component{
 }
 
 @connect(
-    state => state
+    state => state,
+    { getMsgList, sendMsg, resvMsg }
 )
 
 class Dashboard extends React.Component{
+    componentDidMount(){
+        if(!this.props.chat.chatmsg.length) {
+            this.props.getMsgList(); //-->server.js中新建查询链接
+            this.props.resvMsg();
+        }
+    }
     render(){
         const {pathname} = this.props.location;
 

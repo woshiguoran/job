@@ -16,13 +16,20 @@ Router.get('/list', function (req, res) {
 });
 //获得聊天列表
 Router.get('/getmsglist', function (req, res) {
-    const user = req.cookies.user;
-    // {$or:[{from: user, to: user}]}
-    Chat.find({},function (err, doc) {
-        if(!err){
-            return res.json({code: 0, data: doc});
-        }
-    })
+    const user = req.cookies.userId;
+    User.find({},function (e, userdoc) {
+        let users = {};
+        userdoc.forEach(v=>{
+            users[v._id] = {name: v.user, avatar: v.avatar}
+        });
+
+        Chat.find({'$or':[{from: user},{to: user}]},function (err, doc) {
+            if(!err){
+                return res.json({code: 0, data: doc, users: users});
+            }
+        })
+    });
+
 });
 //设计信息完善
 Router.post('/update', function (req, res) {

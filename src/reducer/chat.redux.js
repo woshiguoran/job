@@ -13,6 +13,7 @@ const MSG_READ = 'MSG_READ';
 
 const inisState = {
     chatmsg: [],
+    users: {},
     unread: 0
 };
 //reducer
@@ -21,27 +22,28 @@ const inisState = {
 export function chat(state = inisState, action) {
     switch (action.type){
         case MSG_LIST:
-            return {...state, chatmsg: action.payload, unread: action.payload.filter(v => !v.read).length};
+            return {...state, users: action.users, chatmsg: action.payload, unread: action.payload.filter(v => !v.read && v.to == action.userId).length};
         case MSG_RESV:
-            return {...state, chatmsg: [...state.chatmsg, action.payload]};
+            const n = action.payload.to == action.userId ? 1 : 0;
+            return {...state, chatmsg: [...state.chatmsg, action.payload], unread: state.unread + n};
         // case MSG_READ:
         default:
             return state;
     }
 }
 
-function msgList(msgs) {
-    return {type: MSG_LIST, payload: msgs}
+function msgList(msgs, users,userId) {
+    return {users, userId,type: MSG_LIST, payload: msgs}
 }
-function msgResv(msg) {
-    return {type: MSG_RESV, payload: msg}
+function msgResv(msg, userId) {
+    return {userId, type: MSG_RESV, payload: msg}
 }
 
 export function resvMsg() {
-    return dispatch=>{
+    return (dispatch, getState)=>{
         socket.on('resvMsg', function (data) {
-            console.log('resvMsg', data);
-            dispatch(msgResv(data))
+            const userId = getState().user._id;
+            dispatch(msgResv(data,userId))
         })
     }
 }
@@ -53,11 +55,12 @@ export function sendMsg({from, to, msg}) {
 }
 
 export function getMsgList() {
-    return dispatch=>{
+    return (dispatch,getState)=>{
         axios.get('/user/getmsglist')
             .then(res=>{
                 if(res.status == 200 && res.data.code == 0){
-                    dispatch(msgList(res.data.data))
+                    const userId = getState().user._id;
+                    dispatch(msgList(res.data.data, res.data.users,userId))
                 }
             })
     }
